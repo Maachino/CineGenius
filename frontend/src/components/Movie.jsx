@@ -7,10 +7,11 @@ function Movie() {
   const [index, setIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [trailer, setTrailer] = useState(null);
+  const [cast, setCast] = useState([]);
   const location = useLocation();
   const { quizResponses } = location.state;
+
   const getRuntimeFilter = (runtimeId) => {
-    // runtime range generator
     switch (runtimeId) {
       case 10:
         return [0, 90];
@@ -72,7 +73,7 @@ function Movie() {
           releaseDateRange.split(",")[1]
         }&with_runtime.gte=${runtimeRange[0]}&with_runtime.lte=${
           runtimeRange[1]
-        }&vote_average.gte=5&page=${pageNumber}`; // add an average vote >=5
+        }&vote_average.gte=5&page=${pageNumber}`;
 
         const response = await fetch(url);
         const data = await response.json();
@@ -84,7 +85,6 @@ function Movie() {
       );
 
       const allMovies = fetchedPages.flatMap((page) => page.results);
-
       const sortedMovies = allMovies.sort(
         (a, b) => a.genre_ids.length - b.genre_ids.length
       );
@@ -100,6 +100,16 @@ function Movie() {
     fetchMovies();
   }, [quizResponses]);
 
+  const fetchCast = async (movieId) => {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${
+        import.meta.env.VITE_TMDB_API_KEY
+      }`
+    );
+    const data = await response.json();
+    setCast(data.cast.slice(0, 5));
+  };
+
   function refreshPage() {
     let newIndex;
     do {
@@ -107,11 +117,12 @@ function Movie() {
     } while (newIndex === index && filteredMovies.length > 1);
     setIndex(newIndex);
 
-    const movie = filteredMovies[newIndex];
+    const randomMovie = filteredMovies[newIndex];
+    fetchCast(randomMovie.id);
 
     (async () => {
       const trailerResponse = await fetch(
-        `https://api.themoviedb.org/3/movie/${movie.id}/videos?api_key=${
+        `https://api.themoviedb.org/3/movie/${randomMovie.id}/videos?api_key=${
           import.meta.env.VITE_TMDB_API_KEY
         }&language=fr-FR`
       );
@@ -147,8 +158,25 @@ function Movie() {
               />
               <p className="movie">{filteredMovies[index].overview}</p>
             </div>
+            {cast && (
+              <div className="actor">
+                <h3>Acteurs :</h3>
+                <ul className="a">
+                  {cast.map((actor) => (
+                    <li key={actor.id} className="actor-item">
+                      <img
+                        className="pActor"
+                        src={`https://image.tmdb.org/t/p/w200${actor.profile_path}`}
+                        alt={actor.name}
+                      />
+                      <p>{actor.name}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <button type="button" onClick={refreshPage}>
-              <span>autre suggestion</span>
+              <span>Autre suggestion</span>
             </button>
             {trailer && (
               <div>

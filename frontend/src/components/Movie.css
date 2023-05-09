@@ -140,4 +140,29 @@ h3 {
     margin-top: 50px;
     margin-bottom: 50px;
   }
+
+  .a {
+    display: flex;
+    flex-direction: row;
+    row-gap: 20px;
+  }
+
+  .actor-item {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    gap: 50px;
+    width: 1000px;
+  }
+  h3 {
+    margin-bottom: 50px;
+  }
+  .actor-item p {
+    margin: 0;
+    text-align: center;
+  }
+
+  .pActor {
+    width: 230px;
+  }
 }
