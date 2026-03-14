@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from "react";
 import "./Movie.css";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function Movie() {
   const [filteredMovies, setFilteredMovies] = useState([]);
   const [index, setIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [trailer, setTrailer] = useState(null);
+  const [error, setError] = useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Guard: redirect to home if quiz was not completed
+  if (!location.state?.quizResponses) {
+    navigate("/");
+    return null;
+  }
+
   const { quizResponses } = location.state;
+
   const getRuntimeFilter = (runtimeId) => {
-    // runtime range generator
     switch (runtimeId) {
       case 10:
         return [0, 90];
@@ -19,9 +28,10 @@ function Movie() {
       case 12:
         return [120, 180];
       default:
-        return [0, Infinity];
+        return [0, 300];
     }
   };
+
   const getReleaseDateRange = (releaseDate) => {
     const currentYear = new Date().getFullYear();
     let startYear;
@@ -57,44 +67,46 @@ function Movie() {
 
   useEffect(() => {
     const fetchMovies = async () => {
-      const runtimeRange = getRuntimeFilter(quizResponses.runtime);
-      const releaseDateRange = getReleaseDateRange(quizResponses.releaseDate);
-      const pagesToFetch = 100;
+      try {
+        const runtimeRange = getRuntimeFilter(quizResponses.runtime);
+        const releaseDateRange = getReleaseDateRange(quizResponses.releaseDate);
+        const [dateFrom, dateTo] = releaseDateRange.split(",");
 
-      const fetchPage = async (pageNumber) => {
-        const url = `https://api.themoviedb.org/3/discover/movie?api_key=${
-          import.meta.env.VITE_TMDB_API_KEY
-        }&language=fr-FR&sort_by=popularity.desc&with_genres=${
-          quizResponses.genre
-        }&primary_release_date.gte=${
-          releaseDateRange.split(",")[0]
-        }&primary_release_date.lte=${
-          releaseDateRange.split(",")[1]
-        }&with_runtime.gte=${runtimeRange[0]}&with_runtime.lte=${
-          runtimeRange[1]
-        }&vote_average.gte=5&page=${pageNumber}`; // add an average vote >=5
+        // Fetch 3 pages via backend proxy (clé TMDB protégée côté serveur)
+        const pages = [1, 2, 3];
+        const fetchPage = async (pageNumber) => {
+          const params = new URLSearchParams({
+            genre: quizResponses.genre,
+            runtimeMin: runtimeRange[0],
+            runtimeMax: runtimeRange[1],
+            dateFrom,
+            dateTo,
+            page: pageNumber,
+          });
+          const response = await fetch(
+            `${import.meta.env.VITE_BACKEND_URL}/api/movies/recommendations?${params}`
+          );
+          if (!response.ok) throw new Error("Erreur lors de la récupération des films");
+          return response.json();
+        };
 
-        const response = await fetch(url);
-        const data = await response.json();
-        return data;
-      };
+        const fetchedPages = await Promise.all(pages.map((p) => fetchPage(p)));
+        const allMovies = fetchedPages.flatMap((page) => page.results || []);
 
-      const fetchedPages = await Promise.all(
-        Array.from({ length: pagesToFetch }, (_, i) => fetchPage(i + 1))
-      );
+        const sortedMovies = allMovies.sort(
+          (a, b) => a.genre_ids.length - b.genre_ids.length
+        );
+        const filteredMoviesG = sortedMovies.filter((movie) => {
+          const mainGenre = movie.genre_ids[0];
+          return mainGenre === quizResponses.genre;
+        });
 
-      const allMovies = fetchedPages.flatMap((page) => page.results);
-
-      const sortedMovies = allMovies.sort(
-        (a, b) => a.genre_ids.length - b.genre_ids.length
-      );
-      const filteredMoviesG = sortedMovies.filter((movie) => {
-        const mainGenre = movie.genre_ids[0];
-        return mainGenre === quizResponses.genre;
-      });
-
-      setFilteredMovies(filteredMoviesG);
-      setIsLoading(false);
+        setFilteredMovies(filteredMoviesG);
+        setIsLoading(false);
+      } catch (err) {
+        setError("Impossible de charger les films. Veuillez réessayer.");
+        setIsLoading(false);
+      }
     };
 
     fetchMovies();
@@ -110,22 +122,33 @@ function Movie() {
     const movie = filteredMovies[newIndex];
 
     (async () => {
-      const trailerResponse = await fetch(
-        `https://api.themoviedb.org/3/movie/${movie.id}/videos?api_key=${
-          import.meta.env.VITE_TMDB_API_KEY
-        }&language=fr-FR`
-      );
-      const trailerData = await trailerResponse.json();
+      try {
+        const trailerResponse = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/api/movies/${movie.id}/trailer`
+        );
+        const trailerData = await trailerResponse.json();
 
-      const youtubeTrailer = trailerData.results.find(
-        (video) => video.site === "YouTube" && video.type === "Trailer"
-      );
-      if (youtubeTrailer) {
-        setTrailer(youtubeTrailer.key);
-      } else {
+        const youtubeTrailer = trailerData.results?.find(
+          (video) => video.site === "YouTube" && video.type === "Trailer"
+        );
+        setTrailer(youtubeTrailer ? youtubeTrailer.key : null);
+      } catch {
         setTrailer(null);
       }
     })();
+  }
+
+  if (error) {
+    return (
+      <div className="main">
+        <div className="container">
+          <p className="error-message">{error}</p>
+          <button type="button" onClick={() => navigate("/")}>
+            Retour au quiz
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -134,8 +157,14 @@ function Movie() {
         <div className="container">
           <div className="loader" />
         </div>
+      ) : filteredMovies.length === 0 ? (
+        <div className="container">
+          <p>Aucun film trouvé pour ces critères. Essayez une autre combinaison !</p>
+          <button type="button" onClick={() => navigate("/")}>
+            Nouveau quiz
+          </button>
+        </div>
       ) : (
-        filteredMovies &&
         filteredMovies[index] && (
           <div key={filteredMovies[index].id} className="text">
             <h2>{filteredMovies[index].title}</h2>
@@ -143,7 +172,7 @@ function Movie() {
               <img
                 className="img"
                 src={`https://image.tmdb.org/t/p/w500${filteredMovies[index].poster_path}`}
-                alt={filteredMovies[index].title}
+                alt={`Affiche du film ${filteredMovies[index].title}`}
               />
               <p className="movie">{filteredMovies[index].overview}</p>
             </div>
@@ -156,8 +185,8 @@ function Movie() {
                 <iframe
                   width="560"
                   height="315"
-                  src={`https://www.youtube.com/embed/${trailer}`}
-                  title="YouTube video player"
+                  src={`https://www.youtube-nocookie.com/embed/${trailer}`}
+                  title={`Bande-annonce de ${filteredMovies[index].title}`}
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen

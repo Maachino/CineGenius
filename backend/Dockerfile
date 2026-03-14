@@ -1,5 +1,5 @@
 # Dockerfile backend
-FROM node:16.14
+FROM node:20-alpine
 
 WORKDIR /usr/src/app
 
@@ -11,6 +11,8 @@ ARG DB_PASSWORD=${DB_PASSWORD}
 ENV DB_PASSWORD=${DB_PASSWORD}
 ARG DB_NAME=${DB_NAME}
 ENV DB_NAME=${DB_NAME}
+ARG TMDB_API_KEY=${TMDB_API_KEY}
+ENV TMDB_API_KEY=${TMDB_API_KEY}
 
 COPY ./backend .
 

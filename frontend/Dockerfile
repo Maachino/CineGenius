@@ -1,6 +1,6 @@
 # Dockerfile frontend
 # build environment
-FROM node:16.14 as builder
+FROM node:20-alpine AS builder
 RUN mkdir /usr/src/app
 WORKDIR /usr/src/app
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
