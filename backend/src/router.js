@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 const itemControllers = require("./controllers/itemControllers");
+const tmdbController = require("./controllers/tmdbController");
 
 const questionsList = [
   {
@@ -40,6 +41,11 @@ const questionsList = [
 router.get("/questions", (req, res) => {
   res.json(questionsList);
 });
+
+// TMDB proxy routes (clé API protégée côté serveur)
+router.get("/api/movies/recommendations", tmdbController.getRecommendations);
+router.get("/api/movies/popular", tmdbController.getPopular);
+router.get("/api/movies/:movieId/trailer", tmdbController.getTrailer);
 
 router.get("/items", itemControllers.browse);
 router.get("/items/:id", itemControllers.read);

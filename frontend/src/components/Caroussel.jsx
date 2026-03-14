@@ -7,13 +7,13 @@ import "./Caroussel.css";
 function Caroussel() {
   const [movies, setMovies] = useState([]);
 
-  const apiKey = import.meta.env.VITE_TMDB_API_KEY;
-  const apiUrl = "https://api.themoviedb.org/3/movie/popular";
   const fetchMovies = async () => {
     try {
-      const response = await fetch(`${apiUrl}?api_key=${apiKey}`);
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/movies/popular`
+      );
       const data = await response.json();
-      setMovies(data.results);
+      setMovies(data.results || []);
     } catch (error) {
       console.error("Erreur lors de la récupération des films", error);
     }
@@ -22,6 +22,7 @@ function Caroussel() {
   useEffect(() => {
     fetchMovies();
   }, []);
+
   const settings = {
     dots: true,
     infinite: true,

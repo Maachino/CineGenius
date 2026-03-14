@@ -15,7 +15,7 @@ function Quiz() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5001/questions")
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/questions`)
       .then((response) => response.json())
       .then((data) => {
         setFetchedData(data);
