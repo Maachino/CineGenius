@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CineGenius — Aperçu</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #1a1a1a;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      gap: 30px;
+      color: white;
+    }
+    h1 {
+      font-size: 14px;
+      color: #888;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .screens {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .device {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .device-label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ── PHONE FRAME ────────────────────────── */
+    .phone {
+      width: 375px;
+      min-height: 812px;
+      background: black;
+      border-radius: 40px;
+      border: 8px solid #333;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .notch {
+      width: 130px;
+      height: 28px;
+      background: #333;
+      border-radius: 0 0 18px 18px;
+      margin: 0 auto;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+
+    /* ── HEADER ────────────────────────────── */
+    .app-header {
+      background: black;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 40px 16px 10px;
+      border-bottom: 2px solid #111;
+    }
+    .logo-left {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #e50914, #8b0000);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 900;
+      color: white;
+      font-family: Georgia, serif;
+      letter-spacing: -2px;
+    }
+    .logo-right {
+      font-size: 22px;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -1px;
+      font-family: Georgia, serif;
+    }
+    .logo-right span { color: #e50914; }
+    .help-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #222;
+      border: 2px solid #555;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    /* ── CAROUSEL ──────────────────────────── */
+    .carousel {
+      padding: 14px 0 8px;
+      background: #0a0a0a;
+    }
+    .carousel h2 {
+      font-size: 13px;
+      color: #bbb;
+      padding: 0 16px 10px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .carousel-track {
+      display: flex;
+      gap: 8px;
+      padding: 0 16px;
+      overflow: hidden;
+    }
+    .poster {
+      flex-shrink: 0;
+      width: 62px;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .poster-img {
+      width: 62px;
+      height: 93px;
+      border-radius: 8px;
+    }
+    .poster-title {
+      font-size: 8px;
+      color: #ccc;
+      text-align: center;
+      margin-top: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    /* Realistic poster colors (simulating movie posters) */
+    .p1 { background: linear-gradient(160deg, #1a0533, #6b21a8, #e879f9); }
+    .p2 { background: linear-gradient(160deg, #0c1445, #1e40af, #60a5fa); }
+    .p3 { background: linear-gradient(160deg, #450a0a, #991b1b, #f87171); }
+    .p4 { background: linear-gradient(160deg, #052e16, #166534, #4ade80); }
+    .p5 { background: linear-gradient(160deg, #1c1917, #57534e, #d6d3d1); }
+
+    /* ── QUIZ PAGE ──────────────────────────── */
+    .quiz-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px;
+      background: black;
+    }
+    .quiz-card {
+      background: #e1e7f0;
+      border-radius: 20px;
+      padding: 24px 20px;
+      width: 100%;
+      color: #1a1a1a;
+    }
+    .quiz-step {
+      font-size: 11px;
+      color: #888;
+      text-align: center;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .quiz-question {
+      font-size: 22px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 24px;
+      color: #111;
+      line-height: 1.3;
+    }
+    .quiz-options {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: white;
+      border: 2px solid #d1d5db;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .quiz-option.selected {
+      border-color: #e50914;
+      background: #fff5f5;
+    }
+    .radio {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #9ca3af;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .radio.checked {
+      border-color: #e50914;
+    }
+    .radio.checked::after {
+      content: '';
+      width: 10px;
+      height: 10px;
+      background: #e50914;
+      border-radius: 50%;
+    }
+    .option-label {
+      font-size: 16px;
+      font-weight: 500;
+      color: #1f2937;
+    }
+    .option-emoji { font-size: 18px; }
+    .quiz-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 20px;
+      border: 2px solid #1f2937;
+      background: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #1f2937;
+    }
+    .quiz-btn.primary {
+      background: #e50914;
+      border-color: #e50914;
+      color: white;
+    }
+
+    /* ── MOVIE PAGE ─────────────────────────── */
+    .movie-page {
+      flex: 1;
+      background: black;
+      color: white;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .movie-title {
+      font-size: 24px;
+      font-weight: 800;
+      text-align: center;
+      line-height: 1.2;
+    }
+    .movie-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .movie-poster-wrap {
+      position: relative;
+    }
+    .movie-poster {
+      width: 200px;
+      height: 300px;
+      border-radius: 14px;
+      background: linear-gradient(160deg, #1e1b4b, #3730a3, #818cf8);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 12px;
+      box-shadow: 0 20px 50px rgba(99,102,241,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .movie-poster::before {
+      content: '🎬';
+      position: absolute;
+      font-size: 60px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -60%);
+      opacity: 0.6;
+    }
+    .movie-rating {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.8);
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fbbf24;
+    }
+    .movie-synopsis {
+      font-size: 14px;
+      color: #d1d5db;
+      line-height: 1.6;
+      text-align: center;
+    }
+    .next-btn {
+      background: white;
+      border-radius: 20px;
+      border: 2px solid white;
+      padding: 10px 28px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #111;
+      cursor: pointer;
+    }
+    .trailer-section {
+      width: 100%;
+    }
+    .trailer-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #9ca3af;
+      margin-bottom: 8px;
+      text-align: left;
+    }
+    .trailer-thumb {
+      width: 100%;
+      height: 180px;
+      background: linear-gradient(135deg, #1f2937, #111827);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .trailer-thumb::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 56'%3E%3Crect width='100' height='56' fill='%23111'/%3E%3Crect x='10' y='5' width='35' height='46' rx='4' fill='%231a1a2e' opacity='0.8'/%3E%3Crect x='55' y='5' width='35' height='46' rx='4' fill='%2316213e' opacity='0.8'/%3E%3C/svg%3E") center/cover;
+      opacity: 0.5;
+    }
+    .play-btn {
+      width: 56px;
+      height: 56px;
+      background: rgba(229, 9, 20, 0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      z-index: 1;
+      box-shadow: 0 4px 20px rgba(229,9,20,0.5);
+    }
+
+    /* ── FOOTER ─────────────────────────────── */
+    .app-footer {
+      background: #0a0a0a;
+      padding: 16px;
+      border-top: 1px solid #1f1f1f;
+      text-align: center;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .footer-links a {
+      font-size: 10px;
+      color: #6b7280;
+      text-decoration: none;
+    }
+    .footer-sep { color: #374151; font-size: 10px; }
+    .tmdb-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .tmdb-logo {
+      background: linear-gradient(90deg, #032541, #01b4e4);
+      color: white;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+    }
+    .tmdb-notice {
+      font-size: 9px;
+      color: #4b5563;
+    }
+    .footer-copy {
+      font-size: 9px;
+      color: #374151;
+    }
+
+    /* ── LOADING SCREEN ─────────────────────── */
+    .loading-page {
+      flex: 1;
+      background: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .loader-ring {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 12px solid #8b0000;
+      border-top-color: #e50914;
+      border-right-color: #ff4444;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── PAGE TABS ──────────────────────────── */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      background: #0d0d0d;
+      border-radius: 12px;
+      padding: 4px;
+    }
+    .tab {
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #666;
+      border: none;
+      background: transparent;
+    }
+    .tab.active {
+      background: #e50914;
+      color: white;
+    }
+
+    /* screens switcher */
+    .screen { display: none; }
+    .screen.visible { display: flex; flex-direction: column; flex: 1; }
+  </style>
+</head>
+<body>
+
+  <h1>CineGenius — Aperçu interactif</h1>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showScreen('home')">🏠 Accueil</button>
+    <button class="tab" onclick="showScreen('genre')">🎭 Genre</button>
+    <button class="tab" onclick="showScreen('loading')">⏳ Chargement</button>
+    <button class="tab" onclick="showScreen('result')">🎬 Résultat</button>
+  </div>
+
+  <div class="screens">
+    <div class="device">
+      <div class="device-label">📱 Vue Mobile</div>
+      <div class="phone">
+        <div class="notch"></div>
+
+        <!-- HEADER (commun) -->
+        <div class="app-header">
+          <div class="logo-left">CG</div>
+          <div class="logo-right">CINE<span>GENIUS</span></div>
+          <div class="help-btn">?</div>
+        </div>
+
+        <!-- CAROUSEL (commun) -->
+        <div class="carousel">
+          <h2>Films populaires :</h2>
+          <div class="carousel-track">
+            <div class="poster">
+              <div class="poster-img p1"></div>
+              <div class="poster-title">Dune 2</div>
+            </div>
+            <div class="poster">
+              <div class="poster-img p2"></div>
+              <div class="poster-title">Avatar 3</div>
+            </div>
+            <div class="poster">
+              <div class="poster-img p3"></div>
+              <div class="poster-title">John Wick 5</div>
+            </div>
+            <div class="poster">
+              <div class="poster-img p4"></div>
+              <div class="poster-title">Interstellar 2</div>
+            </div>
+            <div class="poster">
+              <div class="poster-img p5"></div>
+              <div class="poster-title">Inception 2</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCREEN: HOME / Q1 DURÉE -->
+        <div id="screen-home" class="screen visible quiz-container">
+          <div class="quiz-card">
+            <div class="quiz-step">Question 1 / 3</div>
+            <div class="quiz-question">Quelle durée préférez-vous ?</div>
+            <ul class="quiz-options">
+              <li class="quiz-option selected">
+                <div class="radio checked"></div>
+                <span class="option-emoji">⚡</span>
+                <span class="option-label">Court (moins de 1h30)</span>
+              </li>
+              <li class="quiz-option">
+                <div class="radio"></div>
+                <span class="option-emoji">🎯</span>
+                <span class="option-label">Moyen (1h30 – 2h)</span>
+              </li>
+              <li class="quiz-option">
+                <div class="radio"></div>
+                <span class="option-emoji">🍿</span>
+                <span class="option-label">Long (2h – 3h)</span>
+              </li>
+            </ul>
+            <button class="quiz-btn">Question suivante →</button>
+          </div>
+        </div>
+
+        <!-- SCREEN: GENRE / Q2 -->
+        <div id="screen-genre" class="screen quiz-container">
+          <div class="quiz-card">
+            <div class="quiz-step">Question 2 / 3</div>
+            <div class="quiz-question">Quel genre de film ?</div>
+            <ul class="quiz-options">
+              <li class="quiz-option selected">
+                <div class="radio checked"></div>
+                <span class="option-emoji">💥</span>
+                <span class="option-label">Action</span>
+              </li>
+              <li class="quiz-option">
+                <div class="radio"></div>
+                <span class="option-emoji">😂</span>
+                <span class="option-label">Comédie</span>
+              </li>
+              <li class="quiz-option">
+                <div class="radio"></div>
+                <span class="option-emoji">👻</span>
+                <span class="option-label">Horreur</span>
+              </li>
+              <li class="quiz-option">
+                <div class="radio"></div>
+                <span class="option-emoji">❤️</span>
+                <span class="option-label">Romance</span>
+              </li>
+              <li class="quiz-option">
+                <div class="radio"></div>
+                <span class="option-emoji">🚀</span>
+                <span class="option-label">Science-fiction</span>
+              </li>
+            </ul>
+            <button class="quiz-btn">Question suivante →</button>
+          </div>
+        </div>
+
+        <!-- SCREEN: LOADING -->
+        <div id="screen-loading" class="screen loading-page">
+          <div class="loader-ring"></div>
+        </div>
+
+        <!-- SCREEN: RESULT -->
+        <div id="screen-result" class="screen movie-page" style="overflow-y:auto;">
+          <div class="movie-title">John Wick : Chapitre 4</div>
+          <div class="movie-body">
+            <div class="movie-poster-wrap">
+              <div class="movie-poster"></div>
+              <div class="movie-rating">⭐ 7.8</div>
+            </div>
+            <p class="movie-synopsis">
+              John Wick affronte les forces les plus puissantes du monde criminel en cherchant à vaincre la Haute Table. Pour retrouver sa liberté, il doit d'abord affronter un nouvel ennemi...
+            </p>
+          </div>
+          <button class="next-btn">Autre suggestion 🎲</button>
+          <div class="trailer-section">
+            <div class="trailer-label">🎬 Trailer</div>
+            <div class="trailer-thumb">
+              <div class="play-btn">▶</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FOOTER (commun) -->
+        <div class="app-footer">
+          <div class="footer-links">
+            <a href="#">Mentions légales</a>
+            <span class="footer-sep">|</span>
+            <a href="#">Confidentialité</a>
+            <span class="footer-sep">|</span>
+            <a href="#">CGU</a>
+            <span class="footer-sep">|</span>
+            <a href="#">Contact</a>
+          </div>
+          <div class="tmdb-badge">
+            <div class="tmdb-logo">TMDB</div>
+            <span class="tmdb-notice">Ce produit utilise l'API TMDB</span>
+          </div>
+          <div class="footer-copy">© 2026 CineGenius — Tous droits réservés</div>
+        </div>
+
+      </div><!-- /phone -->
+    </div>
+  </div>
+
+  <script>
+    function showScreen(name) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('visible'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('screen-' + name).classList.add('visible');
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>
