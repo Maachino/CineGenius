@@ -37,7 +37,8 @@ function Footer() {
             />
           </a>
           <p className="footer-tmdb-notice">
-            Ce produit utilise l&apos;API TMDB mais n&apos;est pas approuvé ou certifié par TMDB.
+            Ce produit utilise l&apos;API TMDB mais n&apos;est pas approuvé ou
+            certifié par TMDB.
           </p>
         </div>
         <p className="footer-copyright">

@@ -22,7 +22,14 @@ function setCache(key, data, ttlSeconds) {
 }
 
 const getRecommendations = async (req, res) => {
-  const { genre, runtimeMin, runtimeMax, dateFrom, dateTo, page = 1 } = req.query;
+  const {
+    genre,
+    runtimeMin,
+    runtimeMax,
+    dateFrom,
+    dateTo,
+    page = 1,
+  } = req.query;
 
   const genreId = parseInt(genre, 10);
   if (!VALID_GENRES.includes(genreId)) {
@@ -40,7 +47,8 @@ const getRecommendations = async (req, res) => {
       sort_by: "popularity.desc",
       with_genres: genreId,
       "primary_release_date.gte": dateFrom || "1900-01-01",
-      "primary_release_date.lte": dateTo || new Date().toISOString().split("T")[0],
+      "primary_release_date.lte":
+        dateTo || new Date().toISOString().split("T")[0],
       "with_runtime.gte": runtimeMin || 0,
       "with_runtime.lte": runtimeMax || 300,
       "vote_average.gte": 5,
@@ -57,7 +65,9 @@ const getRecommendations = async (req, res) => {
     return res.json(data);
   } catch (err) {
     console.error("TMDB recommendations error:", err.message);
-    return res.status(502).json({ error: "Impossible de récupérer les films depuis TMDB" });
+    return res
+      .status(502)
+      .json({ error: "Impossible de récupérer les films depuis TMDB" });
   }
 };
 
@@ -84,7 +94,9 @@ const getPopular = async (req, res) => {
     return res.json(data);
   } catch (err) {
     console.error("TMDB popular error:", err.message);
-    return res.status(502).json({ error: "Impossible de récupérer les films populaires" });
+    return res
+      .status(502)
+      .json({ error: "Impossible de récupérer les films populaires" });
   }
 };
 
@@ -106,7 +118,9 @@ const getTrailer = async (req, res) => {
       language: "fr-FR",
     });
 
-    const response = await fetch(`${TMDB_BASE_URL}/movie/${id}/videos?${params}`);
+    const response = await fetch(
+      `${TMDB_BASE_URL}/movie/${id}/videos?${params}`
+    );
     if (!response.ok) {
       throw new Error(`TMDB API error: ${response.status}`);
     }
@@ -116,7 +130,9 @@ const getTrailer = async (req, res) => {
     return res.json(data);
   } catch (err) {
     console.error("TMDB trailer error:", err.message);
-    return res.status(502).json({ error: "Impossible de récupérer la bande-annonce" });
+    return res
+      .status(502)
+      .json({ error: "Impossible de récupérer la bande-annonce" });
   }
 };
 

@@ -84,9 +84,12 @@ function Movie() {
             page: pageNumber,
           });
           const response = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/api/movies/recommendations?${params}`
+            `${
+              import.meta.env.VITE_BACKEND_URL
+            }/api/movies/recommendations?${params}`
           );
-          if (!response.ok) throw new Error("Erreur lors de la récupération des films");
+          if (!response.ok)
+            throw new Error("Erreur lors de la récupération des films");
           return response.json();
         };
 
@@ -151,50 +154,62 @@ function Movie() {
     );
   }
 
-  return (
-    <div className="main">
-      {isLoading ? (
+  if (isLoading) {
+    return (
+      <div className="main">
         <div className="container">
           <div className="loader" />
         </div>
-      ) : filteredMovies.length === 0 ? (
+      </div>
+    );
+  }
+
+  if (filteredMovies.length === 0) {
+    return (
+      <div className="main">
         <div className="container">
-          <p>Aucun film trouvé pour ces critères. Essayez une autre combinaison !</p>
+          <p>
+            Aucun film trouvé pour ces critères. Essayez une autre combinaison !
+          </p>
           <button type="button" onClick={() => navigate("/")}>
             Nouveau quiz
           </button>
         </div>
-      ) : (
-        filteredMovies[index] && (
-          <div key={filteredMovies[index].id} className="text">
-            <h2>{filteredMovies[index].title}</h2>
-            <div className="n">
-              <img
-                className="img"
-                src={`https://image.tmdb.org/t/p/w500${filteredMovies[index].poster_path}`}
-                alt={`Affiche du film ${filteredMovies[index].title}`}
-              />
-              <p className="movie">{filteredMovies[index].overview}</p>
-            </div>
-            <button type="button" onClick={refreshPage}>
-              <span>autre suggestion</span>
-            </button>
-            {trailer && (
-              <div>
-                <h3>Trailer:</h3>
-                <iframe
-                  width="560"
-                  height="315"
-                  src={`https://www.youtube-nocookie.com/embed/${trailer}`}
-                  title={`Bande-annonce de ${filteredMovies[index].title}`}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
-            )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="main">
+      {filteredMovies[index] && (
+        <div key={filteredMovies[index].id} className="text">
+          <h2>{filteredMovies[index].title}</h2>
+          <div className="n">
+            <img
+              className="img"
+              src={`https://image.tmdb.org/t/p/w500${filteredMovies[index].poster_path}`}
+              alt={`Affiche du film ${filteredMovies[index].title}`}
+            />
+            <p className="movie">{filteredMovies[index].overview}</p>
           </div>
-        )
+          <button type="button" onClick={refreshPage}>
+            <span>autre suggestion</span>
+          </button>
+          {trailer && (
+            <div>
+              <h3>Trailer:</h3>
+              <iframe
+                width="560"
+                height="315"
+                src={`https://www.youtube-nocookie.com/embed/${trailer}`}
+                title={`Bande-annonce de ${filteredMovies[index].title}`}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
