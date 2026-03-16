@@ -1,25 +1,70 @@
 .caroussel-container {
-  display: none;
+  display: block;
+  padding: 30px 15px;
+  overflow: hidden;
+}
+
+.caroussel-container h1 {
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  font-size: 20px;
+  text-align: left;
+  padding-left: 15px;
+  margin-bottom: 15px;
+}
+
+.caroussel-item {
+  padding: 0 6px;
+}
+
+.caroussel-image {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  transition: transform var(--transition-med), box-shadow var(--transition-med);
+  cursor: pointer;
+}
+
+.caroussel-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.caroussel-item-title {
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 13px;
+  margin-top: 8px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Slick carousel overrides */
+.caroussel-container .slick-dots li button:before {
+  color: var(--text-muted);
+}
+
+.caroussel-container .slick-dots li.slick-active button:before {
+  color: var(--accent-gold);
+}
+
+.caroussel-container .slick-prev:before,
+.caroussel-container .slick-next:before {
+  color: var(--accent-gold);
 }
 
 @media screen and (min-width: 700px) {
   .caroussel-container {
-    display: block;
-    margin-top: 15px;
+    padding: 40px 30px;
   }
-  .caroussel-image {
-    max-width: 800px; /* Ajustez la largeur maximale en pixels */
-    max-height: 500px; /* Ajustez la hauteur maximale en pixels */
+
+  .caroussel-container h1 {
+    font-size: 28px;
+    padding-left: 30px;
   }
+
   .caroussel-item-title {
-    color: white;
-    font-size: 25px;
-    margin-right: 30px;
-    margin-top: 10px;
-  }
-  h1 {
-    color: white;
-    margin-bottom: 30px;
-    margin-right: 1600px;
+    font-size: 15px;
   }
 }

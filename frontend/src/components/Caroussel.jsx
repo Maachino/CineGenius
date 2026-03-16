@@ -32,6 +32,15 @@ function Caroussel() {
     autoplay: true,
     autoplaySpeed: 6000,
     pauseOnHover: true,
+    responsive: [
+      {
+        breakpoint: 700,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+        },
+      },
+    ],
   };
 
   return (
@@ -46,6 +55,7 @@ function Caroussel() {
         autoplay={settings.autoplay}
         autoplaySpeed={settings.autoplaySpeed}
         pauseOnHover={settings.pauseOnHover}
+        responsive={settings.responsive}
       >
         {movies.map((movie) => (
           <div key={movie.id} className="caroussel-item">

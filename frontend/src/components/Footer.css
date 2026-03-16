@@ -1,28 +1,73 @@
 .Footer {
-  background-image: url(../img/cn.jpg);
-  background-repeat: no-repeat;
-  background-size: cover;
-  padding: 5%;
-  height: 200px;
-  position: relative;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  position: relative;
+  background: linear-gradient(to bottom, var(--bg-primary), #050505);
+  border-top: 1px solid var(--border-subtle);
+  padding: 40px 20px 24px;
+  margin-top: auto;
+}
+
+.footer-content {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.footer-link {
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 13px;
+  transition: color var(--transition-fast);
+}
+
+.footer-link:hover {
+  color: var(--accent-gold);
+}
+
+.footer-separator {
+  color: var(--border-medium);
+  margin: 0 4px;
+}
+
+.footer-tmdb {
+  text-align: center;
+}
+
+.footer-tmdb-logo {
+  opacity: 0.7;
+  transition: opacity var(--transition-fast);
+}
+
+.footer-tmdb-logo:hover {
+  opacity: 1;
+}
+
+.footer-tmdb-notice {
+  color: var(--text-muted);
+  font-size: 11px;
+  margin-top: 6px;
+}
+
+.footer-copyright {
+  color: var(--text-muted);
+  font-size: 12px;
+  letter-spacing: 0.05em;
 }
 
 @media screen and (min-width: 700px) {
   .Footer {
-    background-image: url(../img/footerDesktop.jpg);
-    height: 500px;
-    padding: 10%;
-    position: relative;
+    padding: 50px 40px 30px;
   }
 
-  .Footer img {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    height: 30%;
+  .footer-link {
+    font-size: 14px;
   }
 }
