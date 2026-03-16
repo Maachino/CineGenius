@@ -39,6 +39,69 @@
   transform: scale(1.03);
 }
 
+.amazon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #ff9900, #e88600);
+  color: #0a0a0a;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.amazon-btn:hover {
+  background: linear-gradient(135deg, #ffad33, #ff9900);
+  box-shadow: 0 0 16px rgba(255, 153, 0, 0.3);
+  transform: translateY(-1px);
+}
+
+.streaming-section {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.streaming-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.streaming-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 14px;
+  transition: all var(--transition-fast);
+}
+
+.streaming-btn:hover {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+  background: rgba(212, 160, 23, 0.08);
+}
+
+.streaming-logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
 .movie-iframe {
   width: 100%;
   max-width: 100%;
@@ -58,6 +121,31 @@
   font-size: 18px;
   color: var(--text-secondary);
   line-height: 1.7;
+}
+
+.score-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(212, 160, 23, 0.15), rgba(212, 160, 23, 0.05));
+  border: 1px solid var(--accent-gold);
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  margin-bottom: 12px;
+}
+
+.score-value {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent-gold);
+}
+
+.score-label {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
 }
 
 .movie-meta {

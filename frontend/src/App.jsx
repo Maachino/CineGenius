@@ -5,6 +5,7 @@ import Quiz from "./components/Quiz";
 import Movie from "./components/Movie";
 import Footer from "./components/Footer";
 import Caroussel from "./components/Caroussel";
+import SEOHead from "./components/SEOHead";
 
 import "./App.css";
 
@@ -37,6 +38,7 @@ function App() {
             path="/"
             element={
               <>
+                <SEOHead />
                 <Caroussel />
                 <Quiz />
               </>

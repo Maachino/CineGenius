@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Movie.css";
 import { useLocation, useNavigate } from "react-router-dom";
+import SEOHead from "./SEOHead";
 
 function Movie() {
   const [filteredMovies, setFilteredMovies] = useState([]);
@@ -8,6 +9,8 @@ function Movie() {
   const [isLoading, setIsLoading] = useState(true);
   const [trailer, setTrailer] = useState(null);
   const [error, setError] = useState(null);
+  const [score, setScore] = useState(null);
+  const [streamingProviders, setStreamingProviders] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -63,6 +66,37 @@ function Movie() {
         break;
     }
     return `${startYear}-01-01,${endYear}-12-31`;
+  };
+
+  const fetchScoreForMovie = async (movieId) => {
+    try {
+      const params = new URLSearchParams({
+        movieId,
+        genre: quizResponses.genre,
+        runtime: quizResponses.runtime,
+        mood: quizResponses.mood || 0,
+        company: quizResponses.company || 0,
+      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/movies/score?${params}`
+      );
+      const data = await response.json();
+      setScore(data.score);
+    } catch {
+      setScore(null);
+    }
+  };
+
+  const fetchStreamingForMovie = async (movieId) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/movies/${movieId}/streaming`
+      );
+      const data = await response.json();
+      setStreamingProviders(data.providers || []);
+    } catch {
+      setStreamingProviders([]);
+    }
   };
 
   const fetchTrailerForMovie = async (movieId) => {
@@ -121,9 +155,11 @@ function Movie() {
         setFilteredMovies(filteredMoviesG);
         setIsLoading(false);
 
-        // Load trailer for the first movie automatically
+        // Load trailer, score, and streaming for the first movie automatically
         if (filteredMoviesG.length > 0) {
           fetchTrailerForMovie(filteredMoviesG[0].id);
+          fetchScoreForMovie(filteredMoviesG[0].id);
+          fetchStreamingForMovie(filteredMoviesG[0].id);
         }
       } catch (err) {
         setError("Impossible de charger les films. Veuillez réessayer.");
@@ -141,7 +177,11 @@ function Movie() {
     } while (newIndex === index && filteredMovies.length > 1);
     setIndex(newIndex);
     setTrailer(null);
+    setScore(null);
+    setStreamingProviders([]);
     fetchTrailerForMovie(filteredMovies[newIndex].id);
+    fetchScoreForMovie(filteredMovies[newIndex].id);
+    fetchStreamingForMovie(filteredMovies[newIndex].id);
   }
 
   const currentMovie = filteredMovies[index];
@@ -192,6 +232,22 @@ function Movie() {
 
   return (
     <div className="main">
+      {currentMovie && (
+        <SEOHead
+          title={currentMovie.title}
+          description={`Découvrez ${
+            currentMovie.title
+          } — recommandé par CineGenius. ${currentMovie.overview?.slice(
+            0,
+            120
+          )}...`}
+          ogImage={
+            currentMovie.poster_path
+              ? `https://image.tmdb.org/t/p/w500${currentMovie.poster_path}`
+              : null
+          }
+        />
+      )}
       <button
         type="button"
         className="back-btn"
@@ -210,6 +266,12 @@ function Movie() {
               {rating && <span>⭐ {rating}/10</span>}
             </p>
           )}
+          {score !== null && (
+            <div className="score-badge">
+              <span className="score-value">{score}%</span>
+              <span className="score-label">pour vous</span>
+            </div>
+          )}
           <div className="n">
             <img
               className="img"
@@ -221,6 +283,39 @@ function Movie() {
           <button type="button" onClick={refreshPage}>
             <span>Autre suggestion</span>
           </button>
+          {streamingProviders.length > 0 && (
+            <div className="streaming-section">
+              <h3>Où regarder ce film ?</h3>
+              <div className="streaming-buttons">
+                {streamingProviders.map((provider) => (
+                  <a
+                    key={provider.name}
+                    href={provider.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="streaming-btn"
+                  >
+                    <img
+                      src={provider.logo}
+                      alt={provider.name}
+                      className="streaming-logo"
+                    />
+                    <span>{provider.name}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+          <a
+            href={`https://www.amazon.fr/s?k=${encodeURIComponent(
+              `${currentMovie.title} film`
+            )}&tag=cinegenie-21&ref=cinegenie&utm_source=cinegenie`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="amazon-btn"
+          >
+            🛒 Acheter / Louer sur Amazon
+          </a>
           {trailer && (
             <div>
               <h3>Bande-annonce :</h3>

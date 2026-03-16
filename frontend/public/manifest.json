@@ -1,0 +1,17 @@
+{
+  "name": "CineGenius — Ton conseiller cinéma",
+  "short_name": "CineGenius",
+  "description": "Trouve ton prochain film en 30 secondes avec un quiz personnalisé.",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0a0a0a",
+  "background_color": "#0a0a0a",
+  "icons": [
+    {
+      "src": "/src/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

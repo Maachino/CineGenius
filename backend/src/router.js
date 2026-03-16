@@ -4,6 +4,7 @@ const router = express.Router();
 
 const itemControllers = require("./controllers/itemControllers");
 const tmdbController = require("./controllers/tmdbController");
+const streamingController = require("./controllers/streamingController");
 
 const questionsList = [
   {
@@ -37,6 +38,25 @@ const questionsList = [
       { id: 34, value: "+20 ans" },
     ],
   },
+  {
+    id: 4,
+    name: "Quelle est votre humeur ce soir ?",
+    options: [
+      { id: 40, value: "Légère/Distrayante" },
+      { id: 41, value: "Émouvante/Intense" },
+      { id: 42, value: "Stimulante/Réflexion" },
+    ],
+  },
+  {
+    id: 5,
+    name: "Vous regardez avec qui ?",
+    options: [
+      { id: 50, value: "Seul(e)" },
+      { id: 51, value: "En couple" },
+      { id: 52, value: "En famille" },
+      { id: 53, value: "Entre amis" },
+    ],
+  },
 ];
 router.get("/questions", (req, res) => {
   res.json(questionsList);
@@ -45,7 +65,9 @@ router.get("/questions", (req, res) => {
 // TMDB proxy routes (clé API protégée côté serveur)
 router.get("/api/movies/recommendations", tmdbController.getRecommendations);
 router.get("/api/movies/popular", tmdbController.getPopular);
+router.get("/api/movies/score", tmdbController.getScore);
 router.get("/api/movies/:movieId/trailer", tmdbController.getTrailer);
+router.get("/api/movies/:movieId/streaming", streamingController.getStreaming);
 
 router.get("/items", itemControllers.browse);
 router.get("/items/:id", itemControllers.read);

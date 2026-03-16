@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Quiz.css";
 
-const TOTAL_QUESTIONS = 3;
+const TOTAL_QUESTIONS = 5;
 
 function Quiz() {
   const [fetchedData, setFetchedData] = useState([]);
@@ -12,6 +12,8 @@ function Quiz() {
     runtime: 0,
     genre: 0,
     releaseDate: "",
+    mood: 0,
+    company: 0,
   });
 
   const navigate = useNavigate();
@@ -36,6 +38,10 @@ function Quiz() {
       setQuizResponses({ ...quizResponses, genre: value.id });
     } else if (currentQuestionId === 3) {
       setQuizResponses({ ...quizResponses, releaseDate: value.value });
+    } else if (currentQuestionId === 4) {
+      setQuizResponses({ ...quizResponses, mood: value.id });
+    } else if (currentQuestionId === 5) {
+      setQuizResponses({ ...quizResponses, company: value.id });
     }
   };
 
