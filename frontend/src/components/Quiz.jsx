@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Quiz.css";
 
+const TOTAL_QUESTIONS = 3;
+
 function Quiz() {
   const [fetchedData, setFetchedData] = useState([]);
   const [currentQuestionId, setCurrentQuestionId] = useState(1);
@@ -25,6 +27,7 @@ function Quiz() {
   const currentQuestion = fetchedData.find(
     (question) => question.id === currentQuestionId
   );
+
   const handleOptionChange = (value) => {
     setSelectedOption(value);
     if (currentQuestionId === 1) {
@@ -35,44 +38,51 @@ function Quiz() {
       setQuizResponses({ ...quizResponses, releaseDate: value.value });
     }
   };
+
   const handleNextQuestion = () => {
     if (selectedOption !== null) {
-      handleOptionChange(selectedOption);
       setCurrentQuestionId(currentQuestionId + 1);
       setSelectedOption(null);
     }
   };
+
   function handleShowRandomMovie() {
-    navigate("/movie", { state: { quizResponses } });
+    if (selectedOption !== null) {
+      navigate("/movie", { state: { quizResponses } });
+    }
   }
 
   return (
     <form className="questionaire">
       {currentQuestion != null && (
         <>
+          <p className="quiz-progress">
+            Question {currentQuestionId}/{TOTAL_QUESTIONS}
+          </p>
           <h2 className="Question">{currentQuestion.name}</h2>
           <ul>
             {currentQuestion.options.map((option) => (
               <li key={option.id}>
                 <input
                   type="radio"
-                  key={option.id}
                   id={option.id}
                   name={`question-${currentQuestion.id}`}
-                  value={option}
+                  value={option.value}
                   onChange={() => handleOptionChange(option)}
                   checked={selectedOption && selectedOption.id === option.id}
+                  aria-label={option.value}
                 />
-
                 <label htmlFor={`${option.id}`}>{option.value}</label>
               </li>
             ))}
           </ul>
-          {currentQuestionId === 3 ? (
+          {currentQuestionId === TOTAL_QUESTIONS ? (
             <button
               type="button"
               className="button"
               onClick={handleShowRandomMovie}
+              disabled={selectedOption === null}
+              aria-disabled={selectedOption === null}
             >
               Valider
             </button>
@@ -81,6 +91,8 @@ function Quiz() {
               type="button"
               className="button"
               onClick={handleNextQuestion}
+              disabled={selectedOption === null}
+              aria-disabled={selectedOption === null}
             >
               Question suivante
             </button>
@@ -90,4 +102,5 @@ function Quiz() {
     </form>
   );
 }
+
 export default Quiz;

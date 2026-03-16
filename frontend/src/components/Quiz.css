@@ -1,19 +1,19 @@
-@font-face {
-  font-family: “Roboto”;
-  src: url(“/frontend/fonts/Roboto/Roboto-Light.ttf”) format(“truetype”);
-  font-weight: 300;
-}
-@font-face {
-  font-family: “Ubuntu”;
-  src: url(“/frontend/fonts/Ubuntu/Ubuntu-Medium.ttf”) format(“truetype”);
-  font-weight: 500;
-}
 ul {
   list-style: none;
   font-size: 20px;
   align-items: center;
   margin-right: 10px;
 }
+
+.quiz-progress {
+  font-size: 14px;
+  color: #666;
+  font-family: "Roboto", Verdana, Tahoma, sans-serif;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
 .Question {
   font-size: 30px;
   text-align: center;
@@ -24,8 +24,9 @@ ul {
   border-radius: 20px;
   padding-left: 5px;
   padding-right: 5px;
-  font-family: “Ubuntu”, Verdana, Tahoma, sans-serif;
+  font-family: "Ubuntu", Verdana, Tahoma, sans-serif;
 }
+
 .questionaire {
   display: flex;
   flex-direction: column;
@@ -38,19 +39,23 @@ ul {
   padding-top: 10px;
   background-color: #e1e7f0;
 }
+
 li {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
 }
+
 label {
   margin-left: 5px;
-  font-family: “roboto”, Verdana, Tahoma, sans-serif;
+  font-family: "roboto", Verdana, Tahoma, sans-serif;
 }
-input[type="“radio”"] {
+
+input[type="radio"] {
   margin-right: 20px;
   transform: scale(1.5);
 }
+
 .button {
   background: #fff;
   backface-visibility: hidden;
@@ -76,24 +81,34 @@ input[type="“radio”"] {
   -webkit-user-select: none;
   touch-action: manipulation;
 }
+
 .button:not(:disabled):active {
   transform: translateY(0.125rem);
 }
+
+.button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 @media screen and (min-width: 701px) {
   .questionaire {
     margin-left: 300px;
     margin-right: 300px;
     padding: 40px;
   }
+
   .Question {
     font-size: 70px;
     border: none;
     margin-bottom: 20px;
   }
+
   label {
     font-size: 30px;
-    font-family: “roboto”, Verdana, Tahoma, sans-serif;
+    font-family: "roboto", Verdana, Tahoma, sans-serif;
   }
+
   .button {
     font-size: 30px;
   }

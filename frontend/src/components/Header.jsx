@@ -8,10 +8,10 @@ import Modal from "./Modal";
 function Header() {
   return (
     <header className="header">
-      <Link to="/">
-        <img src={logo1} alt="Header" className="logo1" />
+      <Link to="/" aria-label="Accueil CineGenius">
+        <img src={logo1} alt="CineGenius – Accueil" className="logo1" />
       </Link>
-      <img src={logo2} alt="Header" className="logo2" />
+      <img src={logo2} alt="CineGenius" className="logo2" />
       <Modal />
     </header>
   );

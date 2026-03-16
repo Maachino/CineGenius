@@ -53,6 +53,7 @@ function Caroussel() {
               className="caroussel-image"
               src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
               alt={movie.title}
+              loading="lazy"
             />
             <div className="caroussel-item-title">{movie.title}</div>
           </div>
